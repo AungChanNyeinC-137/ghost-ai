@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Editor shell foundation
+- Authentication and editor protection
 
 ## Current Goal
 
-- Editor shell foundation is implemented and verified.
+- Implement Clerk auth and protect the editor workflow behind sign-in.
 
 ## Completed
 
@@ -23,7 +23,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - Added `components/editor/project-sidebar.tsx` with attached left slide-in behavior, shadcn Tabs for My Projects and Shared, empty states, and a full-width New Project action.
 - Added `components/editor/editor-shell.tsx` to manage local sidebar state and compose the navbar, sidebar, and editor canvas placeholder.
 - Updated `app/page.tsx` to render the editor shell as the first screen.
-- Confirmed the existing shadcn Dialog primitives expose title, description, and footer action slots while using mapped theme tokens; no actual dialogs were added in this feature.
+- Implemented Clerk authentication and route protection: `ClerkProvider` in the root layout, public auth pages, editor redirection, and `UserButton` in the editor navbar.
+- Added `proxy.ts` route protection that uses Clerk sign-in and sign-up env vars for public auth paths.
 
 ## In Progress
 
