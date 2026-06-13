@@ -25,6 +25,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Updated `app/page.tsx` to render the editor shell as the first screen.
 - Implemented Clerk authentication and route protection: `ClerkProvider` in the root layout, public auth pages, editor redirection, and `UserButton` in the editor navbar.
 - Added `proxy.ts` route protection that uses Clerk sign-in and sign-up env vars for public auth paths.
+- Implemented feature spec `05-prisma.md`: added Prisma models in `prisma/models/project.prisma`, a cached `lib/prisma.ts` client singleton, and generated Prisma Client to `app/generated/prisma`.
 
 ## In Progress
 
@@ -38,6 +39,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 - `lucid-react` from the feature spec is not available in the npm registry; shadcn installed and uses `lucide-react`, matching the UI context icon guidance.
 - `PannelLeftOpen` / `PannelLeftClose` in `02-editor.md` appear to be misspellings; implementation uses the available `lucide-react` icons `PanelLeftOpen` and `PanelLeftClose`.
+- Prisma migration was not run in this environment because `DATABASE_URL` is not configured locally; the client generation succeeded.
 
 ## Architecture Decisions
 
