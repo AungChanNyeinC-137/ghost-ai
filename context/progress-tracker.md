@@ -26,6 +26,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Implemented Clerk authentication and route protection: `ClerkProvider` in the root layout, public auth pages, editor redirection, and `UserButton` in the editor navbar.
 - Added `proxy.ts` route protection that uses Clerk sign-in and sign-up env vars for public auth paths.
 - Implemented feature spec `05-prisma.md`: added Prisma models in `prisma/models/project.prisma`, a cached `lib/prisma.ts` client singleton, and generated Prisma Client to `app/generated/prisma`.
+- Implemented feature spec `06-projects-apis.md`: added backend project API routes for list/create/rename/delete with Clerk authentication and owner authorization.
 
 ## In Progress
 
