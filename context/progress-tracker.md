@@ -28,11 +28,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- None.
+- Implement feature spec `04-project-dialog.md`.
 
 ## Next Up
 
-- Choose the next feature spec to implement.
+- Verify project dialogs, slug preview, and sidebar actions work without TypeScript or lint issues.
 
 ## Open Questions
 

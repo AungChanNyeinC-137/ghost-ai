@@ -1,15 +1,29 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { Plus, X } from "lucide-react"
+import { Edit3, Plus, Trash2, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
+type Project = {
+  id: string
+  name: string
+  slug: string
+  owned: boolean
+}
+
 interface ProjectSidebarProps {
   isOpen: boolean
   onClose: () => void
+  activeTab: "my-projects" | "shared"
+  onTabChange: (value: "my-projects" | "shared") => void
+  myProjects: Project[]
+  sharedProjects: Project[]
+  onCreate: () => void
+  onRename: (project: Project) => void
+  onDelete: (project: Project) => void
 }
 
 function EmptyProjectState({ children }: { children: ReactNode }) {
@@ -20,7 +34,17 @@ function EmptyProjectState({ children }: { children: ReactNode }) {
   )
 }
 
-export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
+export function ProjectSidebar({
+  isOpen,
+  onClose,
+  activeTab,
+  onTabChange,
+  myProjects,
+  sharedProjects,
+  onCreate,
+  onRename,
+  onDelete,
+}: ProjectSidebarProps) {
   return (
     <aside
       className={cn(
@@ -42,23 +66,83 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
         </Button>
       </div>
 
-      <Tabs defaultValue="my-projects" className="min-h-0 flex-1 gap-4 p-4">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => onTabChange(value as "my-projects" | "shared")}
+        className="min-h-0 flex-1 gap-4 p-4"
+      >
         <TabsList className="grid w-full grid-cols-2 bg-subtle">
           <TabsTrigger value="my-projects">My Projects</TabsTrigger>
           <TabsTrigger value="shared">Shared</TabsTrigger>
         </TabsList>
 
         <TabsContent value="my-projects" className="min-h-0">
-          <EmptyProjectState>No projects yet.</EmptyProjectState>
+          {myProjects.length === 0 ? (
+            <EmptyProjectState>No projects yet.</EmptyProjectState>
+          ) : (
+            <div className="space-y-3">
+              {myProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className="group rounded-2xl border border-surface-border-subtle bg-surface px-4 py-3"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-copy-primary">{project.name}</p>
+                      <p className="truncate text-xs text-copy-secondary">{project.slug}</p>
+                    </div>
+                    <div className="flex items-center gap-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        className="h-8 w-8 rounded-full"
+                        onClick={() => onRename(project)}
+                        aria-label={`Rename ${project.name}`}
+                      >
+                        <Edit3 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        className="h-8 w-8 rounded-full text-destructive"
+                        onClick={() => onDelete(project)}
+                        aria-label={`Delete ${project.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="shared" className="min-h-0">
-          <EmptyProjectState>No shared projects yet.</EmptyProjectState>
+          {sharedProjects.length === 0 ? (
+            <EmptyProjectState>No shared projects yet.</EmptyProjectState>
+          ) : (
+            <div className="space-y-3">
+              {sharedProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className="rounded-2xl border border-surface-border-subtle bg-surface px-4 py-3"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-copy-primary">{project.name}</p>
+                    <p className="truncate text-xs text-copy-secondary">{project.slug}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 
       <div className="border-t border-sidebar-border p-4">
-        <Button type="button" className="w-full">
+        <Button type="button" className="w-full" onClick={onCreate}>
           <Plus className="h-4 w-4" />
           New Project
         </Button>
