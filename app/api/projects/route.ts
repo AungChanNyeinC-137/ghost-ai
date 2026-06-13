@@ -27,16 +27,30 @@ export async function POST(request: Request) {
   const body = (await request.json()) as {
     name?: string;
     description?: string | null;
+    id?: string;
   };
 
+  const data: {
+    ownerId: string;
+    name: string;
+    description: string | null;
+    status: "DRAFT" | "ARCHIVED";
+    canvasJsonPath: string | null;
+    id?: string;
+  } = {
+    ownerId: userId,
+    name: body.name?.trim() || "Untitled Project",
+    description: body.description ?? null,
+    status: "DRAFT",
+    canvasJsonPath: null,
+  };
+
+  if (body.id) {
+    data.id = body.id
+  }
+
   const project = await prisma.project.create({
-    data: {
-      ownerId: userId,
-      name: body.name?.trim() || "Untitled Project",
-      description: body.description ?? null,
-      status: "DRAFT",
-      canvasJsonPath: null,
-    },
+    data,
   });
 
   return NextResponse.json(project, { status: 201 });

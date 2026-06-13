@@ -15,14 +15,22 @@ import {
 } from "@/components/ui/dialog"
 import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
-import { useProjectDialogs } from "@/components/editor/use-project-dialogs"
+import { useProjectActions, ProjectData } from "@/hooks/use-project-actions"
 
-export function EditorShell() {
+interface EditorShellProps {
+  myProjects: ProjectData[]
+  sharedProjects: ProjectData[]
+  currentProjectId?: string
+}
+
+export function EditorShell({
+  myProjects,
+  sharedProjects,
+  currentProjectId,
+}: EditorShellProps) {
   const [isProjectSidebarOpen, setIsProjectSidebarOpen] = useState(true)
   const {
     activeTab,
-    myProjects,
-    sharedProjects,
     dialogMode,
     activeProject,
     projectName,
@@ -37,7 +45,7 @@ export function EditorShell() {
     submitCreate,
     submitRename,
     submitDelete,
-  } = useProjectDialogs()
+  } = useProjectActions(currentProjectId)
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden bg-base text-copy-primary">
