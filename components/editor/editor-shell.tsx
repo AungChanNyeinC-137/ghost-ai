@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Plus } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -47,6 +48,12 @@ export function EditorShell({
     submitDelete,
   } = useProjectActions(currentProjectId)
 
+  const router = useRouter()
+
+  const handleProjectSelect = (project: ProjectData) => {
+    router.push(`/editor/${project.id}`)
+  }
+
   return (
     <div className="flex min-h-screen flex-col overflow-hidden bg-base text-copy-primary">
       <EditorNavbar
@@ -72,6 +79,7 @@ export function EditorShell({
           myProjects={myProjects}
           sharedProjects={sharedProjects}
           onCreate={openCreateDialog}
+          onSelectProject={handleProjectSelect}
           onRename={openRenameDialog}
           onDelete={openDeleteDialog}
         />

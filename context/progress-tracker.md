@@ -28,7 +28,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Implemented feature spec `05-prisma.md`: added Prisma models in `prisma/models/project.prisma`, a cached `lib/prisma.ts` client singleton, and generated Prisma Client to `app/generated/prisma`.
 - Implemented feature spec `06-projects-apis.md`: added backend project API routes for list/create/rename/delete with Clerk authentication and owner authorization.
 - Implemented feature spec `08-editor-workspace-shell.md`: added `lib/project-access.ts`, `components/editor/access-denied.tsx`, `/editor/[projectId]` server access checks, and the workspace shell layout with sidebar highlight, share and AI controls.
-- Fixed editor workspace shell UI issues: sidebar collapse behavior now expands the central canvas area, share/AI icon buttons are right-aligned in the navbar, and the sidebar/center/AI panel containers share consistent rounded borders.
+- Fixed editor workspace shell UI issues: sidebar collapse behavior now expands the central canvas area, share/AI icon buttons are right-aligned in the navbar, the sidebar/center/AI panel containers share consistent rounded borders, sidebar project items now navigate to `/editor/[projectId]` correctly, the workspace shell create dialog is available from the sidebar +New Project button, and the per-project edit/delete icon buttons now open Rename and Delete dialogs properly.
 
 ## In Progress
 

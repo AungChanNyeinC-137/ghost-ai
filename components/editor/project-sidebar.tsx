@@ -23,6 +23,7 @@ interface ProjectSidebarProps {
   myProjects: Project[]
   sharedProjects: Project[]
   onCreate: () => void
+  onSelectProject?: (project: Project) => void
   onRename: (project: Project) => void
   onDelete: (project: Project) => void
 }
@@ -44,6 +45,7 @@ export function ProjectSidebar({
   myProjects,
   sharedProjects,
   onCreate,
+  onSelectProject,
   onRename,
   onDelete,
 }: ProjectSidebarProps) {
@@ -89,13 +91,21 @@ export function ProjectSidebar({
                 return (
                   <div
                     key={project.id}
+                    role="button"
+                    tabIndex={0}
                     className={cn(
-                      "group rounded-2xl border px-4 py-3",
+                      "group rounded-2xl border px-4 py-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                       isActive
                         ? "border-primary/30 bg-primary/5"
-                        : "border-surface-border-subtle bg-surface"
+                        : "border-surface-border-subtle bg-surface hover:border-primary/20 hover:bg-subtle"
                     )}
                     aria-current={isActive ? "page" : undefined}
+                    onClick={() => onSelectProject?.(project)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        onSelectProject?.(project)
+                      }
+                    }}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
@@ -108,7 +118,10 @@ export function ProjectSidebar({
                           variant="ghost"
                           size="icon-sm"
                           className="h-8 w-8 rounded-full"
-                          onClick={() => onRename(project)}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            onRename(project)
+                          }}
                           aria-label={`Rename ${project.name}`}
                         >
                           <Edit3 className="h-4 w-4" />
@@ -118,7 +131,10 @@ export function ProjectSidebar({
                           variant="ghost"
                           size="icon-sm"
                           className="h-8 w-8 rounded-full text-destructive"
-                          onClick={() => onDelete(project)}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            onDelete(project)
+                          }}
                           aria-label={`Delete ${project.name}`}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -143,13 +159,21 @@ export function ProjectSidebar({
                 return (
                   <div
                     key={project.id}
+                    role="button"
+                    tabIndex={0}
                     className={cn(
-                      "rounded-2xl border px-4 py-3",
+                      "rounded-2xl border px-4 py-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                       isActive
                         ? "border-primary/30 bg-primary/5"
-                        : "border-surface-border-subtle bg-surface"
+                        : "border-surface-border-subtle bg-surface hover:border-primary/20 hover:bg-subtle"
                     )}
                     aria-current={isActive ? "page" : undefined}
+                    onClick={() => onSelectProject?.(project)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        onSelectProject?.(project)
+                      }
+                    }}
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-copy-primary">{project.name}</p>

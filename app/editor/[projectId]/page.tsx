@@ -6,19 +6,20 @@ import { AccessDenied } from "@/components/editor/access-denied"
 import { WorkspaceShell } from "@/components/editor/workspace-shell"
 
 interface EditorWorkspacePageProps {
-  params: {
+  params: Promise<{
     projectId: string
-  }
+  }>
 }
 
 export default async function EditorWorkspacePage({ params }: EditorWorkspacePageProps) {
+  const { projectId } = await params
   const identity = await getClerkIdentity()
 
   if (!identity) {
     redirect("/sign-in")
   }
 
-  const project = await getProjectWithAccess(params.projectId, identity.userId, identity.email)
+  const project = await getProjectWithAccess(projectId, identity.userId, identity.email)
 
   if (!project) {
     return <AccessDenied />
@@ -31,7 +32,7 @@ export default async function EditorWorkspacePage({ params }: EditorWorkspacePag
       project={project}
       myProjects={myProjects}
       sharedProjects={sharedProjects}
-      currentRoomId={params.projectId}
+      currentRoomId={projectId}
     />
   )
 }

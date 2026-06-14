@@ -1,8 +1,19 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Share2 } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
 import { useProjectActions, ProjectData } from "@/hooks/use-project-actions"
@@ -40,7 +51,12 @@ export function WorkspaceShell({
     submitDelete,
   } = useProjectActions(currentRoomId)
 
+  const router = useRouter()
   const projectDescription = project.owned ? "Owned by you" : "Shared workspace"
+
+  const handleSelectProject = (project: ProjectData) => {
+    router.push(`/editor/${project.id}`)
+  }
 
   const handleShare = async () => {
     if (typeof window === "undefined" || !navigator.clipboard) {
@@ -72,6 +88,7 @@ export function WorkspaceShell({
             myProjects={myProjects}
             sharedProjects={sharedProjects}
             onCreate={openCreateDialog}
+            onSelectProject={handleSelectProject}
             onRename={openRenameDialog}
             onDelete={openDeleteDialog}
           />
@@ -135,6 +152,42 @@ export function WorkspaceShell({
               ) : null}
             </div>
           </main>
+
+          <Dialog open={dialogMode === "create"} onOpenChange={(open) => !open && closeDialog()}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create project</DialogTitle>
+                <DialogDescription>Live preview the slug while typing the project name.</DialogDescription>
+              </DialogHeader>
+              <form
+                className="space-y-4"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  submitCreate()
+                }}
+              >
+                <div className="space-y-2">
+                  <label htmlFor="project-name" className="block text-sm font-medium text-copy-primary">
+                    Project name
+                  </label>
+                  <Input
+                    id="project-name"
+                    value={projectName}
+                    onChange={(event) => setProjectName(event.target.value)}
+                    placeholder="Enter a project name"
+                  />
+                </div>
+                <div className="rounded-xl border border-border bg-muted px-4 py-3 text-sm text-copy-secondary">
+                  Slug preview: <span className="font-medium text-copy-primary">{slugPreview}</span>
+                </div>
+                <DialogFooter>
+                  <Button type="submit" disabled={isLoading}>
+                    Create project
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>
