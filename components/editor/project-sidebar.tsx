@@ -15,6 +15,7 @@ type Project = {
 }
 
 interface ProjectSidebarProps {
+  activeProjectId?: string
   isOpen: boolean
   onClose: () => void
   activeTab: "my-projects" | "shared"
@@ -35,6 +36,7 @@ function EmptyProjectState({ children }: { children: ReactNode }) {
 }
 
 export function ProjectSidebar({
+  activeProjectId,
   isOpen,
   onClose,
   activeTab,
@@ -48,8 +50,8 @@ export function ProjectSidebar({
   return (
     <aside
       className={cn(
-        "absolute inset-y-0 left-0 z-20 flex w-80 max-w-[calc(100vw-2rem)] flex-col border-r border-surface-border bg-sidebar text-sidebar-foreground shadow-2xl shadow-black/30 transition-transform duration-200 ease-out",
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        "absolute inset-y-0 left-0 z-20 flex w-80 max-w-[calc(100vw-2rem)] flex-col border-r border-surface-border bg-sidebar text-sidebar-foreground shadow-2xl shadow-black/30 transition-transform duration-200 ease-out rounded-3xl md:static md:translate-x-0 md:shadow-none",
+        isOpen ? "translate-x-0" : "-translate-x-full md:hidden"
       )}
       aria-hidden={!isOpen}
     >
@@ -81,41 +83,51 @@ export function ProjectSidebar({
             <EmptyProjectState>No projects yet.</EmptyProjectState>
           ) : (
             <div className="space-y-3">
-              {myProjects.map((project) => (
-                <div
-                  key={project.id}
-                  className="group rounded-2xl border border-surface-border-subtle bg-surface px-4 py-3"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-copy-primary">{project.name}</p>
-                      <p className="truncate text-xs text-copy-secondary">{project.slug}</p>
-                    </div>
-                    <div className="flex items-center gap-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-sm"
-                        className="h-8 w-8 rounded-full"
-                        onClick={() => onRename(project)}
-                        aria-label={`Rename ${project.name}`}
-                      >
-                        <Edit3 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-sm"
-                        className="h-8 w-8 rounded-full text-destructive"
-                        onClick={() => onDelete(project)}
-                        aria-label={`Delete ${project.name}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+              {myProjects.map((project) => {
+                const isActive = project.id === activeProjectId
+
+                return (
+                  <div
+                    key={project.id}
+                    className={cn(
+                      "group rounded-2xl border px-4 py-3",
+                      isActive
+                        ? "border-primary/30 bg-primary/5"
+                        : "border-surface-border-subtle bg-surface"
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-copy-primary">{project.name}</p>
+                        <p className="truncate text-xs text-copy-secondary">{project.slug}</p>
+                      </div>
+                      <div className="flex items-center gap-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => onRename(project)}
+                          aria-label={`Rename ${project.name}`}
+                        >
+                          <Edit3 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="h-8 w-8 rounded-full text-destructive"
+                          onClick={() => onDelete(project)}
+                          aria-label={`Delete ${project.name}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </TabsContent>
@@ -125,17 +137,27 @@ export function ProjectSidebar({
             <EmptyProjectState>No shared projects yet.</EmptyProjectState>
           ) : (
             <div className="space-y-3">
-              {sharedProjects.map((project) => (
-                <div
-                  key={project.id}
-                  className="rounded-2xl border border-surface-border-subtle bg-surface px-4 py-3"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-copy-primary">{project.name}</p>
-                    <p className="truncate text-xs text-copy-secondary">{project.slug}</p>
+              {sharedProjects.map((project) => {
+                const isActive = project.id === activeProjectId
+
+                return (
+                  <div
+                    key={project.id}
+                    className={cn(
+                      "rounded-2xl border px-4 py-3",
+                      isActive
+                        ? "border-primary/30 bg-primary/5"
+                        : "border-surface-border-subtle bg-surface"
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-copy-primary">{project.name}</p>
+                      <p className="truncate text-xs text-copy-secondary">{project.slug}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </TabsContent>

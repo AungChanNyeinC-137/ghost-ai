@@ -1,7 +1,9 @@
-import { auth, currentUser } from "@clerk/nextjs/server"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 
-import { getProjectById } from "@/lib/project-data"
+import { getClerkIdentity, getProjectWithAccess } from "@/lib/project-access"
+import { getEditorProjectLists } from "@/lib/project-data"
+import { AccessDenied } from "@/components/editor/access-denied"
+import { WorkspaceShell } from "@/components/editor/workspace-shell"
 
 interface EditorWorkspacePageProps {
   params: {
@@ -10,28 +12,26 @@ interface EditorWorkspacePageProps {
 }
 
 export default async function EditorWorkspacePage({ params }: EditorWorkspacePageProps) {
-  const { userId } = await auth()
+  const identity = await getClerkIdentity()
 
-  if (!userId) {
+  if (!identity) {
     redirect("/sign-in")
   }
 
-  const user = await currentUser()
-  const email = user?.emailAddresses?.[0]?.emailAddress ?? null
-  const project = await getProjectById(params.projectId, userId, email)
+  const project = await getProjectWithAccess(params.projectId, identity.userId, identity.email)
 
   if (!project) {
-    notFound()
+    return <AccessDenied />
   }
 
+  const { myProjects, sharedProjects } = await getEditorProjectLists(identity.userId, identity.email)
+
   return (
-    <div className="min-h-screen bg-base px-6 py-10 text-copy-primary">
-      <div className="mx-auto max-w-4xl rounded-3xl border border-surface-border bg-surface p-10 shadow-lg shadow-black/5">
-        <h1 className="text-3xl font-semibold">{project.name}</h1>
-        <p className="mt-3 text-sm text-copy-secondary">
-          Workspace for <span className="font-medium">{project.slug}</span>. This is the editor workspace shell placeholder.
-        </p>
-      </div>
-    </div>
+    <WorkspaceShell
+      project={project}
+      myProjects={myProjects}
+      sharedProjects={sharedProjects}
+      currentRoomId={params.projectId}
+    />
   )
 }
